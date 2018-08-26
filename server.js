@@ -147,20 +147,78 @@ and your server is running do the following:
 /*Books
 ----------------------*/
 //1. Find books with fewer than 500 but more than 200 pages
+// Book.find({ pages: { $gt: 200, $lt: 500 } }, function (err, rslt){
+//     if(err) { return console.error(err); }
+//     console.log(rslt);
+// });
 
-//2. Find books whose rating is less than 5, and sort by the author's name
+// //2. Find books whose rating is less than 5, and sort by the author's name
+// //Book.find({ rating: { $lt: 5 }})._addSpecial( "$orderby", { author : 1 });
+// Book.find({ rating: { $lt: 5 }},function (err, rslt){
+//   if(err) { return console.error(err); }
+//   console.log(rslt);
+// }).sort( { author : 1 } );
 
 //3. Find all the Fiction books, skip the first 2, and display only 3 of them 
-
+// let g = "fiction";
+// Book.find({ "genres" : { $regex : new RegExp(g, "i") }},
+// function (err, rslt){
+//   if(err) { return console.error(err); }
+//   console.log(rslt);
+// }).skip(2).limit(3);
 
 /*People
 ----------------------*/
 //1. Find all the people who are tall (>180) AND rich (>30000)
 
+// Person.find({
+//   $and: [
+//       {height:{$gt:180} },
+//       {salary:{$gt:30000} }
+//   ]
+// }, function (err, rslt){
+//   if(err) { return console.error(err); }
+//   console.log(rslt);
+// });
+
+// Person.find({height:{$gt:180} },function (err, rslt){
+//   if(err) { return console.error(err); }
+//   console.log(rslt);
+// }).and([{salary:{$gt:30000}}]);
+
+// Person.find({},function (err, rslt){
+//   if(err) { return console.error(err); }
+//   console.log(rslt);
+// }).and([{salary:{$gt:30000}},{height:{$gt:180}}]);
+
+
 //2. Find all the people who are tall (>180) OR rich (>30000)
+// Person.find({},function (err, rslt){
+//   if(err) { return console.error(err); }
+//   console.log(rslt);
+// }).or([{salary:{$gt:30000}},{height:{$gt:180}}]);
 
 //3. Find all the people who have grey hair or eyes, and are skinny (<70)
+// Person.find({weight:{$lt:70}},function (err, rslt){
+//   if(err) { return console.error(err); }
+//   console.log(rslt);
+// }).or([{hair:'grey'},{eyes:'grey'}]);
 
 //4. Find people who have at least 1 kid with grey hair
+// Person.find({'kids':{"$elemMatch":{hair:'grey'}}},function (err, rslt){
+//   if(err) { return console.error(err); }
+//   console.log(rslt);
+// }).and([{numKids:{$gt:0}}]);
+
+
+// Person.find({},function (err, rslt){
+//   if(err) { return console.error(err); }
+//   console.log(rslt);
+// }).and([{numKids:{$gt:0}}]).elemMatch('kids',{hair:'grey'});
+
 
 //5. Find all the people who have at least one overweight kid, and are overweight themselves (>100)
+Person.find({},function (err, rslt){
+  if(err) { return console.error(err); }
+  console.log(rslt);
+}).and([{weight:{$gt:100}},{numKids:{$gt:0}}]).elemMatch('kids',{weight:{$gt:100}});
